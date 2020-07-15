@@ -81,6 +81,7 @@ public class LinkedIntList implements Iterable<Integer> {
                 } else {
                     return result + ", <" + current.data + "> CYCLE DETECTED HERE ...";
                 }
+
             }
             result += "]";
             return result;

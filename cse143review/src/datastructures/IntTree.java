@@ -28,6 +28,7 @@ import java.util.Set;
 
 public class IntTree implements Iterable<Integer> {
     public IntTreeNode overallRoot;
+    public IntTree left;
     private int hashCode;
 
     public IntTree() {
