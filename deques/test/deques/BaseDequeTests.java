@@ -195,6 +195,25 @@ public abstract class BaseDequeTests extends BaseTest {
         checkInvariants(deque);
     }
 
+
+    @Test
+    void simpleaddFirst() {
+        Deque<Integer> deque = createDeque();
+        deque.addFirst(1);
+        deque.addFirst(2);
+        deque.addFirst(3);
+        deque.addFirst(4);
+        deque.addLast(-1);
+        deque.addLast(-2);
+        deque.addLast(-3);
+        assertThat(deque.removeFirst()).isEqualTo(4);
+        assertThat(deque.removeFirst()).isEqualTo(3);
+        assertThat(deque.removeFirst()).isEqualTo(2);
+        assertThat(deque.removeLast()).isEqualTo(-3);
+        assertThat(deque.removeLast()).isEqualTo(-2);
+        assertThat(deque.removeLast()).isEqualTo(-1);
+
+    }
     /*
     This test demonstrates why we like unit tests that test a single unit at a time:
     calling multiple methods in the same test makes issues very hard to debug.
