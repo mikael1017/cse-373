@@ -10,8 +10,8 @@ import java.util.Map;
 public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
     // TODO: define reasonable default values for each of the following three fields
     private static final double DEFAULT_RESIZING_LOAD_FACTOR_THRESHOLD = 0;
-    private static final int DEFAULT_INITIAL_CHAIN_COUNT = 0;
-    private static final int DEFAULT_INITIAL_CHAIN_CAPACITY = 0;
+    private static final int DEFAULT_INITIAL_CHAIN_COUNT = 5;
+    private static final int DEFAULT_INITIAL_CHAIN_CAPACITY = 3;
 
     /*
     Warning:
@@ -37,8 +37,7 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
     }
 
     public ChainedHashMap(double resizingLoadFactorThreshold, int initialChainCount, int chainInitialCapacity) {
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        this.chains = createArrayOfChains(chainInitialCapacity);
     }
 
     /**
