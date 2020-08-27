@@ -26,11 +26,12 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
         PriorityNode<T> temp = this.items.get(b);
         this.items.add(a, temp);
         this.items.add(b, this.items.remove(a + 1));
+        this.items.remove(b + 1);
     }
 
     @Override
     public void add(T item, double priority) {
-        if (item == null) {
+        if (item == null || this.contains(item)) {
             throw new IllegalArgumentException();
         }
         this.items.add(new PriorityNode<>(item, priority));
@@ -43,9 +44,13 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
 
     private void helperAdd(T item, double priority) {
         int currIndex = this.size;
-        while (this.items.get(currIndex / 2).getPriority() > this.items.get(currIndex).getPriority()) {
-            this.swap(currIndex, currIndex / 2);
-            currIndex = currIndex / 2;
+        while (currIndex / 2 >= START_INDEX) {
+            if (this.items.get(currIndex / 2).getPriority() > this.items.get(currIndex).getPriority()) {
+                this.swap(currIndex, currIndex / 2);
+                currIndex = currIndex / 2;
+            } else {
+                break;
+            }
         }
     }
 
@@ -84,7 +89,7 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
 
     private void removeHelper() {
         int currIndex = START_INDEX;
-        while ((currIndex * 2) + 1 <= this.size) {
+        while ((currIndex * 2) <= this.size) {
             double curr = this.items.get(currIndex).getPriority();
             double left = this.items.get(currIndex * 2).getPriority();
             if ((currIndex * 2) + 1 <= this.size) {
@@ -94,16 +99,18 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
                     if (left < right) {
                         this.swap(currIndex, currIndex * 2);
                         currIndex = currIndex * 2;
-                    } else {
+                    } else if (left > right) {
                         this.swap(currIndex, (currIndex * 2) + 1);
                         currIndex = (currIndex * 2) + 1;
                     }
+                } else {
+                    break;
                 }
+            } else if (curr > left) {
+                this.swap(currIndex, currIndex * 2);
+                currIndex = currIndex * 2;
             } else {
-                if (curr > left) {
-                    this.swap(currIndex, currIndex *2);
-                    currIndex = currIndex * 2;
-                }
+                break;
             }
         }
     }
