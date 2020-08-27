@@ -189,7 +189,6 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
     private static class ArrayMapIterator<K, V> implements Iterator<Map.Entry<K, V>> {
         private final SimpleEntry<K, V>[] entries;
         private int index = 0;
-        private int size = 0;
         // You may add more fields and constructor parameters
 
         public ArrayMapIterator(SimpleEntry<K, V>[] entries) {
@@ -198,12 +197,11 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
 
         @Override
         public boolean hasNext() {
-            boolean result = this.entries[index] != null;
-            return result;
+            return this.entries[index] != null;
         }
 
         @Override
-        //  throw nosuch element if element is hot found
+        //  throw no such element if element is hot found
         public Map.Entry<K, V> next() {
             if (!hasNext()) {
                 throw new NoSuchElementException("no such element has been found");
