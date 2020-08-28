@@ -37,13 +37,11 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
         this.items.add(new PriorityNode<>(item, priority));
         this.size++;
         if (this.size > 1) {
-            helperAdd(item, priority);
+            helperAdd(this.size);
         }
-
     }
 
-    private void helperAdd(T item, double priority) {
-        int currIndex = this.size;
+    private void helperAdd(int currIndex) {
         while (currIndex / 2 >= START_INDEX) {
             if (this.items.get(currIndex / 2).getPriority() > this.items.get(currIndex).getPriority()) {
                 this.swap(currIndex, currIndex / 2);
@@ -117,9 +115,22 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
 
     @Override
     public void changePriority(T item, double priority) {
-        if (this.size == 0) {
+        if (this.size == 0 || !this.contains(item)) {
             throw new NoSuchElementException();
         }
+        int index = get(item);
+        PriorityNode<T> change = this.items.get(index);
+        change.setPriority(priority);
+        helperAdd(index);
+    }
+
+    private int get(T item) {
+        for (int i = 1; i <= this.size; i++) {
+            if (this.items.get(i).getItem().equals(item)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
