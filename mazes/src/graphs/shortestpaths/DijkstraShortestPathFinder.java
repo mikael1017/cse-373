@@ -5,10 +5,7 @@ import graphs.Graph;
 import priorityqueues.DoubleMapMinPQ;
 import priorityqueues.ExtrinsicMinPQ;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Computes shortest paths using Dijkstra's algorithm.
@@ -19,31 +16,15 @@ public class DijkstraShortestPathFinder<G extends Graph<V, E>, V, E extends Base
 
     protected <T> ExtrinsicMinPQ<T> createMinPQ() {
         return new DoubleMapMinPQ<>();
-        /*
-        If you have confidence in your heap implementation, you can disable the line above
-        and enable the one below.
-        You'll also need to change the part of the class declaration that says
-        `ArrayHeapMinPQ<T extends Comparable<T>>` to `ArrayHeapMinPQ<T>`.
-         */
-        // return new ArrayHeapMinPQ<>();
 
-        /*
-        Otherwise, do not change this method.
-        We override this during grading to test your code using our correct implementation so that
-        you don't lose extra points if your implementation is buggy.
-         */
     }
 
-
-    /**
-     *  Instead of initializing values for all vertices at the beginning of the algorithm, we’ll initialize values for
-     * only the starting vertex. This necessitates that we also change our relaxation operation to match,
-     * to initialize values for new vertices as they are encountered.
-     *  Additionally, since the maze application has a particular destination in mind, our algorithm does not need to
-     * compute the full SPT; we can stop as soon as we have found the shortest path from the starting vertex to the destination.
-     */
     @Override
     public ShortestPath<V, E> findShortestPath(G graph, V start, V end) {
+
+        if (graph.outgoingEdgesFrom(start).isEmpty()) {
+            return new ShortestPath.Failure<>();
+        }
         if (Objects.equals(start, end)) {
             return new ShortestPath.SingleVertex<>(start);
         }
@@ -56,7 +37,7 @@ public class DijkstraShortestPathFinder<G extends Graph<V, E>, V, E extends Base
         minPQ.add(start, 0.0);
         distMap.put(start, 0.0);
 
-        while (!minPQ.isEmpty()) {
+        while (!minPQ.isEmpty() && !edgeMap.containsKey(end)) {
             V fromVertex = minPQ.removeMin();
             for (E edge : graph.outgoingEdgesFrom(fromVertex)) {
                 V toVertex = edge.to();
@@ -71,15 +52,26 @@ public class DijkstraShortestPathFinder<G extends Graph<V, E>, V, E extends Base
                             minPQ.add(toVertex, newDistance);
                         }
                     }
+                    visited.add(fromVertex);
                 }
+                if (toVertex.equals(end)) {
+                    visited.add(toVertex);
+                    break;
+                }
+
             }
-            visited.add(fromVertex);
         }
+        Iterator<V> iterator = edgeMap.keySet().iterator();
+        while (iterator.hasNext()) {
+            V vertex = iterator.next();
+            if (!visited.contains(vertex)) {
+                iterator.remove();
+            }
+        }
+        List<E> edgeList = new ArrayList<E>(edgeMap.values());
 
-        return new ShortestPath.Success<>(edgeMap.values());
+        return new ShortestPath.Success<>(edgeList);
     }
-
     //  graph.outgoingEdgesFrom(V vertex) - returns an unmodifiable collection of the outgoing edges from the given vertex
-
 
 }
