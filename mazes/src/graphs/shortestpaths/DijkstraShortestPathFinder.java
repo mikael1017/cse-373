@@ -37,8 +37,12 @@ public class DijkstraShortestPathFinder<G extends Graph<V, E>, V, E extends Base
         minPQ.add(start, 0.0);
         distMap.put(start, 0.0);
 
-        while (!minPQ.isEmpty() && !edgeMap.containsKey(end)) {
+        while (!minPQ.isEmpty()) {
             V fromVertex = minPQ.removeMin();
+            if (fromVertex.equals(end)) {
+                visited.add(end);
+                break;
+            }
             for (E edge : graph.outgoingEdgesFrom(fromVertex)) {
                 V toVertex = edge.to();
                 if (!visited.contains(toVertex)) {
@@ -54,21 +58,21 @@ public class DijkstraShortestPathFinder<G extends Graph<V, E>, V, E extends Base
                     }
                     visited.add(fromVertex);
                 }
-                if (toVertex.equals(end)) {
-                    visited.add(toVertex);
-                    break;
-                }
-
             }
         }
-        Iterator<V> iterator = edgeMap.keySet().iterator();
-        while (iterator.hasNext()) {
-            V vertex = iterator.next();
-            if (!visited.contains(vertex)) {
-                iterator.remove();
+        V vertex = end;
+        List<E> edgeList = new ArrayList<>();
+        Stack<E> tempStack = new Stack<>();
+        while (!vertex.equals(start)) {
+            if (!edgeMap.containsKey(vertex)) {
+                return new ShortestPath.Failure<>();
             }
+            tempStack.push(edgeMap.get(vertex));
+            vertex = edgeMap.get(vertex).from();
         }
-        List<E> edgeList = new ArrayList<E>(edgeMap.values());
+        while (!tempStack.isEmpty()) {
+            edgeList.add(tempStack.pop());
+        }
 
         return new ShortestPath.Success<>(edgeList);
     }
