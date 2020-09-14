@@ -76,6 +76,4 @@ public class DijkstraShortestPathFinder<G extends Graph<V, E>, V, E extends Base
 
         return new ShortestPath.Success<>(edgeList);
     }
-    //  graph.outgoingEdgesFrom(V vertex) - returns an unmodifiable collection of the outgoing edges from the given vertex
-
 }

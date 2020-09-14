@@ -16,6 +16,28 @@ import java.util.List;
 public class KruskalMinimumSpanningTreeFinder<G extends KruskalGraph<V, E>, V, E extends BaseEdge<V, E>>
     implements MinimumSpanningTreeFinder<G, V, E> {
 
+    /*
+     PSEUDO CODE
+        initialize each vertex to be an independent component sort the edges by weight
+        foreach (edge (u, v) in sorted order) {
+            if (u and v are in different components) {
+                update u and v to be in the smae component
+                add (u,v) to the MST
+
+
+     with disjoint sets
+     KRUSKALMST(Graph G)
+        foreach (V : G.vertices) {
+            makeSet(v);
+        }
+        sort the edges by weight
+        foreach (edge (u, v) in sorted order) {
+            if(findSet(v) is not the same as
+                findSet(u)) {
+                    union(u, v)
+            }
+        }
+     */
     protected DisjointSets<V> createDisjointSets() {
         return new QuickFindDisjointSets<>();
         /*
@@ -38,10 +60,20 @@ public class KruskalMinimumSpanningTreeFinder<G extends KruskalGraph<V, E>, V, E
         // sort edges in the graph in ascending weight order
         List<E> edges = new ArrayList<>(graph.allEdges());
         edges.sort(Comparator.comparingDouble(E::weight));
-
         DisjointSets<V> disjointSets = createDisjointSets();
-
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        List<E> mst = new ArrayList<>();
+        for (V vertex : graph.allVertices()) {
+            disjointSets.makeSet(vertex);
+        }
+        for (E edge : edges) {
+            V from = edge.from();
+            V to = edge.to();
+            if (disjointSets.findSet(to) != disjointSets.findSet(from)) {
+                disjointSets.union(from, to);
+                mst.add(edge);
+            }
+        }
+        MinimumSpanningTree<V, E> result = new MinimumSpanningTree.Success<>(mst);
+        return result;
     }
 }
