@@ -59,6 +59,9 @@ public class KruskalMinimumSpanningTreeFinder<G extends KruskalGraph<V, E>, V, E
 
         // sort edges in the graph in ascending weight order
         List<E> edges = new ArrayList<>(graph.allEdges());
+        if (edges.isEmpty()) {
+            return new MinimumSpanningTree.Success<>();
+        }
         edges.sort(Comparator.comparingDouble(E::weight));
         DisjointSets<V> disjointSets = createDisjointSets();
         List<E> mst = new ArrayList<>();
@@ -72,6 +75,9 @@ public class KruskalMinimumSpanningTreeFinder<G extends KruskalGraph<V, E>, V, E
                 disjointSets.union(from, to);
                 mst.add(edge);
             }
+        }
+        if (mst.size() != graph.allVertices().size() - 1) {
+            return new MinimumSpanningTree.Failure<>();
         }
         MinimumSpanningTree<V, E> result = new MinimumSpanningTree.Success<>(mst);
         return result;
