@@ -38,18 +38,16 @@ public class KruskalMazeCarver extends MazeCarver {
         // Hint: you'll probably need to include something like the following:
         // this.minimumSpanningTreeFinder.findMinimumSpanningTree(new MazeGraph(edges));
         ArrayList<EdgeWithData<Room, Wall>> edges = new ArrayList<>();
-        Set<Wall> copy = new HashSet<>();
         for (Wall w : walls) {
             edges.add(new EdgeWithData<Room, Wall>(w.getRoom1(), w.getRoom2(), rand.nextDouble(), w));
-            copy.add(w);
         }
+        MazeGraph graph = new MazeGraph(edges);
         Collection<EdgeWithData<Room, Wall>> result = this.minimumSpanningTreeFinder.
             findMinimumSpanningTree(new MazeGraph(edges)).edges();
         Set<Wall> beRemoved = new HashSet<>();
         for (EdgeWithData<Room, Wall> edge : result) {
             beRemoved.add(edge.data());
         }
-        copy.removeAll(beRemoved);
-        return copy;
+        return beRemoved;
     }
 }
