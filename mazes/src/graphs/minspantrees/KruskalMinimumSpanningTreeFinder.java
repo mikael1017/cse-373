@@ -1,7 +1,7 @@
 package graphs.minspantrees;
 
 import disjointsets.DisjointSets;
-import disjointsets.QuickFindDisjointSets;
+import disjointsets.UnionBySizeCompressingDisjointSets;
 import graphs.BaseEdge;
 import graphs.KruskalGraph;
 
@@ -16,35 +16,13 @@ import java.util.List;
 public class KruskalMinimumSpanningTreeFinder<G extends KruskalGraph<V, E>, V, E extends BaseEdge<V, E>>
     implements MinimumSpanningTreeFinder<G, V, E> {
 
-    /*
-     PSEUDO CODE
-        initialize each vertex to be an independent component sort the edges by weight
-        foreach (edge (u, v) in sorted order) {
-            if (u and v are in different components) {
-                update u and v to be in the smae component
-                add (u,v) to the MST
 
-
-     with disjoint sets
-     KRUSKALMST(Graph G)
-        foreach (V : G.vertices) {
-            makeSet(v);
-        }
-        sort the edges by weight
-        foreach (edge (u, v) in sorted order) {
-            if(findSet(v) is not the same as
-                findSet(u)) {
-                    union(u, v)
-            }
-        }
-     */
     protected DisjointSets<V> createDisjointSets() {
-        return new QuickFindDisjointSets<>();
         /*
         Disable the line above and enable the one below after you've finished implementing
         your `UnionBySizeCompressingDisjointSets`.
          */
-        // return new UnionBySizeCompressingDisjointSets<>();
+        return new UnionBySizeCompressingDisjointSets<>();
 
         /*
         Otherwise, do not change this method.
