@@ -87,6 +87,14 @@ public abstract class BaseMapTests extends BaseTest {
         Map<String, String> map = createMapWith1Entry();
         assertThat(map).hasSize(1);
     }
+    /*
+    @Test
+    void is_put_work() {
+        Map<String, String> map = createMapWith1Entry();
+        assertThat(map.)
+    }
+    */
+
 
     @Test
     void containsKey_returnsTrue() {

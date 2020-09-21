@@ -9,12 +9,14 @@ public class ArrayDeque<T> extends AbstractDeque<T> {
 
     @SuppressWarnings("unchecked")
     public ArrayDeque() {
+        //  default : size 8 array
         data = (T[]) new Object[8];
         front = 0;
         back = 1;
         size = 0;
     }
 
+        //  increase index of i by one unit to the right
     private static int increment(int i, int length) {
         if (i == length - 1) {
             return 0;
@@ -22,7 +24,7 @@ public class ArrayDeque<T> extends AbstractDeque<T> {
             return i + 1;
         }
     }
-
+        //  decrease index of i by one unit to the left
     private static int decrement(int i, int length) {
         if (i == 0) {
             return length - 1;
@@ -30,16 +32,18 @@ public class ArrayDeque<T> extends AbstractDeque<T> {
             return i - 1;
         }
     }
-
+        //  add given item into the front of the array
     public void addFirst(T item) {
         if (size == data.length) {
             resize(data.length * 2);
         }
         data[front] = item;
+
         front = decrement(front, data.length);
         size += 1;
-    }
 
+    }
+        //  add given item into the back of the array
     public void addLast(T item) {
         if (size == data.length) {
             resize(data.length * 2);
@@ -49,6 +53,7 @@ public class ArrayDeque<T> extends AbstractDeque<T> {
         size += 1;
     }
 
+        //  remove the first element of the array
     public T removeFirst() {
         if (size == 0) {
             return null;
@@ -63,6 +68,7 @@ public class ArrayDeque<T> extends AbstractDeque<T> {
         return result;
     }
 
+        //  remove the last element of the array
     public T removeLast() {
         if (size == 0) {
             return null;
@@ -77,6 +83,7 @@ public class ArrayDeque<T> extends AbstractDeque<T> {
         return result;
     }
 
+        //  return the element of the array at given index
     public T get(int index) {
         if (index >= size) {
             return null;
@@ -85,7 +92,7 @@ public class ArrayDeque<T> extends AbstractDeque<T> {
             return data[place % data.length];
         }
     }
-
+        //  return string representation of the array
     public String toString() {
         // We use a StringBuilder since it concatenates strings more efficiently
         // than using += in a loop
@@ -101,15 +108,17 @@ public class ArrayDeque<T> extends AbstractDeque<T> {
         }
         return output.toString();
     }
-
+        //  return size of the deque
     public int size() {
         return size;
     }
 
+        //  resize the array to given capacity
     @SuppressWarnings("unchecked")
     private void resize(int capacity) {
+        //  make new array with given capacity
         T[] newData = (T[]) new Object[capacity];
-        int i = increment(front, size);
+        int i = increment(front, data.length);
         for (int newIndex = 0; newIndex < size; newIndex += 1) {
             newData[newIndex] = data[i];
             i = increment(i, size);

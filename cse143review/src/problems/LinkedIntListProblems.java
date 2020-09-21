@@ -22,16 +22,30 @@ public class LinkedIntListProblems {
      * Reverses the 3 elements in the `LinkedIntList` (assume there are exactly 3 elements).
      */
     public static void reverse3(LinkedIntList list) {
-        // TODO replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        ListNode temp = list.front;
+        ListNode curr = list.front.next.next;
+        curr.next = temp.next;
+        temp.next = null;
+        curr.next.next = temp;
+        list.front = curr;
     }
 
     /**
      * Moves the first element of the input list to the back of the list.
      */
     public static void firstToLast(LinkedIntList list) {
-        // TODO replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        if (list.front != null && list.front.next != null) {
+            ListNode root = list.front;
+            ListNode first = list.front;
+            root = root.next;
+            first.next = null;
+            ListNode curr = root;
+            while (curr.next != null) {
+                curr = curr.next;
+            }
+            curr.next = first;
+            list.front = root;
+        }
     }
 
     /**
@@ -40,7 +54,35 @@ public class LinkedIntListProblems {
      */
     public static LinkedIntList concatenate(LinkedIntList a, LinkedIntList b) {
         // Hint: you'll need to use the 'new' keyword to construct new objects.
-        // TODO replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        LinkedIntList sum = new LinkedIntList();
+        if (a.front != null || b.front != null) {
+            if (a.front == null) {
+                sum = new LinkedIntList(b.front.data);
+                ListNode curr = sum.front;
+                ListNode temp = b.front;
+                while (temp.next != null) {
+                    curr.next = new ListNode(temp.next.data);
+                    temp = temp.next;
+                    curr = curr.next;
+                }
+            } else {
+                sum = new LinkedIntList(a.front.data);
+                ListNode curr = sum.front;
+                ListNode temp = a.front;
+                while (temp.next != null) {
+                    curr.next = new ListNode(temp.next.data);
+                    temp = temp.next;
+                    curr = curr.next;
+                }
+                temp = b.front;
+                while (temp != null) {
+                    curr.next = new ListNode(temp.data);
+                    temp = temp.next;
+                    curr = curr.next;
+                }
+            }
+
+        }
+        return sum;
     }
 }

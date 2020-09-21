@@ -204,6 +204,31 @@ public class ArrayHeapMinPQTests extends BaseTest {
     }
 
     @Nested
+    class ChangePriority1Item {
+        ExtrinsicMinPQ<Integer> setUpMinPQ() {
+            ExtrinsicMinPQ<Integer> pq = createMinPQ();
+            pq.add(1, 7);
+            pq.add(2, 2);
+            return pq;
+        }
+
+        @Test
+        void isValid() {
+            ExtrinsicMinPQ<Integer> pq = setUpMinPQ();
+            assertThat(pq).isValid();
+        }
+
+        @Test
+        void checkPriority() {
+            ExtrinsicMinPQ<Integer> pq = setUpMinPQ();
+            pq.changePriority(1, 1);
+            assertThat(pq.peekMin()).isEqualTo(1);
+        }
+
+    }
+
+
+    @Nested
     @DisplayName("Add 3 Same Priority")
     class Add3Same {
         ExtrinsicMinPQ<Integer> setUpMinPQ() {
@@ -287,6 +312,7 @@ public class ArrayHeapMinPQTests extends BaseTest {
             assertThat(pq).isValid();
         }
     }
+
 
     @Nested
     @DisplayName("Add 10 Arbitrary Priority")

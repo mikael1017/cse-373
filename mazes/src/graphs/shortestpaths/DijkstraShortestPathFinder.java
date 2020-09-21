@@ -5,6 +5,8 @@ import graphs.Graph;
 import priorityqueues.DoubleMapMinPQ;
 import priorityqueues.ExtrinsicMinPQ;
 
+import java.util.*;
+
 /**
  * Computes shortest paths using Dijkstra's algorithm.
  * @see ShortestPathFinder for more documentation.
@@ -14,25 +16,64 @@ public class DijkstraShortestPathFinder<G extends Graph<V, E>, V, E extends Base
 
     protected <T> ExtrinsicMinPQ<T> createMinPQ() {
         return new DoubleMapMinPQ<>();
-        /*
-        If you have confidence in your heap implementation, you can disable the line above
-        and enable the one below.
-        You'll also need to change the part of the class declaration that says
-        `ArrayHeapMinPQ<T extends Comparable<T>>` to `ArrayHeapMinPQ<T>`.
-         */
-        // return new ArrayHeapMinPQ<>();
 
-        /*
-        Otherwise, do not change this method.
-        We override this during grading to test your code using our correct implementation so that
-        you don't lose extra points if your implementation is buggy.
-         */
     }
 
     @Override
     public ShortestPath<V, E> findShortestPath(G graph, V start, V end) {
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
-    }
 
+        if (graph.outgoingEdgesFrom(start).isEmpty()) {
+            return new ShortestPath.Failure<>();
+        }
+        if (Objects.equals(start, end)) {
+            return new ShortestPath.SingleVertex<>(start);
+        }
+
+        ExtrinsicMinPQ<V> minPQ = createMinPQ();
+        HashMap<V, Double> distMap = new HashMap<>();
+        HashSet<V> visited = new HashSet<>();
+        HashMap<V, E> edgeMap = new HashMap<>();
+
+        minPQ.add(start, 0.0);
+        distMap.put(start, 0.0);
+
+        while (!minPQ.isEmpty()) {
+            V fromVertex = minPQ.removeMin();
+            if (fromVertex.equals(end)) {
+                visited.add(end);
+                break;
+            }
+            for (E edge : graph.outgoingEdgesFrom(fromVertex)) {
+                V toVertex = edge.to();
+                if (!visited.contains(toVertex)) {
+                    double newDistance = edge.weight() + distMap.get(fromVertex);
+                    if (distMap.getOrDefault(toVertex, Double.POSITIVE_INFINITY) > newDistance) {
+                        distMap.put(toVertex, newDistance);
+                        edgeMap.put(toVertex, edge);
+                        if (minPQ.contains(toVertex)) {
+                            minPQ.changePriority(toVertex, newDistance);
+                        } else {
+                            minPQ.add(toVertex, newDistance);
+                        }
+                    }
+                    visited.add(fromVertex);
+                }
+            }
+        }
+        V vertex = end;
+        List<E> edgeList = new ArrayList<>();
+        Stack<E> tempStack = new Stack<>();
+        while (!vertex.equals(start)) {
+            if (!edgeMap.containsKey(vertex)) {
+                return new ShortestPath.Failure<>();
+            }
+            tempStack.push(edgeMap.get(vertex));
+            vertex = edgeMap.get(vertex).from();
+        }
+        while (!tempStack.isEmpty()) {
+            edgeList.add(tempStack.pop());
+        }
+
+        return new ShortestPath.Success<>(edgeList);
+    }
 }

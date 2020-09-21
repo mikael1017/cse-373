@@ -2,14 +2,16 @@ package maps;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * @see AbstractIterableMap
  * @see Map
  */
 public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
-    // TODO: define a reasonable default value for the following field
-    private static final int DEFAULT_INITIAL_CAPACITY = 0;
+    private static final int DEFAULT_INITIAL_CAPACITY = 10;
+    private int size = 0;
+    //private int index = 0;
 
     /*
     Warning:
@@ -34,8 +36,7 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
 
     public ArrayMap(int initialCapacity) {
         this.entries = this.createArrayOfEntries(initialCapacity);
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+
     }
 
     /**
@@ -63,38 +64,113 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
 
     @Override
     public V get(Object key) {
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        Iterator<Map.Entry<K, V>> iter = this.iterator();
+        if (key == null) {
+            while (iter.hasNext()) {
+                Map.Entry<K, V> entry = iter.next();
+                if (entry.getKey() == null) {
+                    return entry.getValue();
+                }
+            }
+        } else {
+            while (iter.hasNext()) {
+                Map.Entry<K, V> entry = iter.next();
+                if (entry.getKey().equals(key)) {
+                    return entry.getValue();
+                }
+            }
+        }
+        //  when dict doesn't contain input key
+        return null;
     }
 
     @Override
     public V put(K key, V value) {
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        Iterator<Map.Entry<K, V>> iter = this.iterator();
+        while (iter.hasNext()) {
+            Map.Entry<K, V> entry = iter.next();
+            if (entry.getKey().equals(key)) {
+                V oldValue = entry.getValue();
+                entry.setValue(value);
+                return oldValue;
+            }
+        }
+        if (this.entries.length - 1 == this.size) {
+            SimpleEntry<K, V>[] temp = this.createArrayOfEntries(this.size * 2);
+            for (int i = 0; i < this.entries.length; i++) {
+                temp[i] = this.entries[i];
+            }
+            this.entries = temp;
+        }
+        this.entries[this.size] = new SimpleEntry<>(key, value);
+        this.size++;
+        return null;
     }
 
     @Override
     public V remove(Object key) {
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        if (!this.containsKey(key)) {
+            return null;
+        } else {
+            this.size--;
+            int index = 0;
+            Iterator<Map.Entry<K, V>> iter = this.iterator();
+            if (key == null) {
+                while (iter.hasNext()) {
+                    Map.Entry<K, V> entry = iter.next();
+                    if (entry.getKey() == null) {
+                        V result = entry.getValue();
+                        this.entries[index] = this.entries[size];
+                        this.entries[size] = null;
+                        return result;
+                    }
+                    index++;
+                }
+            } else {
+                while (iter.hasNext()) {
+                    Map.Entry<K, V> entry = iter.next();
+                    if (entry.getKey().equals(key)) {
+                        V result = entry.getValue();
+                        this.entries[index] = this.entries[size];
+                        this.entries[size] = null;
+                        return result;
+                    }
+                    index++;
+                }
+            }
+            return null;
+        }
     }
 
     @Override
     public void clear() {
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        this.entries = this.createArrayOfEntries(DEFAULT_INITIAL_CAPACITY );
     }
 
     @Override
     public boolean containsKey(Object key) {
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        Iterator<Map.Entry<K, V>> iter = this.iterator();
+        if (key == null) {
+            while (iter.hasNext()) {
+                Map.Entry<K, V> entry = iter.next();
+                if (entry.getKey() == null) {
+                    return true;
+                }
+            }
+        } else {
+            while (iter.hasNext()) {
+                Map.Entry<K, V> entry = iter.next();
+                if (entry.getKey().equals(key)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
     public int size() {
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return this.size;
     }
 
     @Override
@@ -112,6 +188,7 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
 
     private static class ArrayMapIterator<K, V> implements Iterator<Map.Entry<K, V>> {
         private final SimpleEntry<K, V>[] entries;
+        private int index = 0;
         // You may add more fields and constructor parameters
 
         public ArrayMapIterator(SimpleEntry<K, V>[] entries) {
@@ -120,14 +197,18 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
 
         @Override
         public boolean hasNext() {
-            // TODO: replace this with your code
-            throw new UnsupportedOperationException("Not implemented yet.");
+            return this.entries[index] != null;
         }
 
         @Override
+        //  throw no such element if element is hot found
         public Map.Entry<K, V> next() {
-            // TODO: replace this with your code
-            throw new UnsupportedOperationException("Not implemented yet.");
+            if (!hasNext()) {
+                throw new NoSuchElementException("no such element has been found");
+            }
+            SimpleEntry<K, V> result = this.entries[index];
+            index++;
+            return result;
         }
     }
 }

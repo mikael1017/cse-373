@@ -1,7 +1,7 @@
 package graphs.minspantrees;
 
 import disjointsets.DisjointSets;
-import disjointsets.QuickFindDisjointSets;
+import disjointsets.UnionBySizeCompressingDisjointSets;
 import graphs.BaseEdge;
 import graphs.KruskalGraph;
 
@@ -16,13 +16,13 @@ import java.util.List;
 public class KruskalMinimumSpanningTreeFinder<G extends KruskalGraph<V, E>, V, E extends BaseEdge<V, E>>
     implements MinimumSpanningTreeFinder<G, V, E> {
 
+
     protected DisjointSets<V> createDisjointSets() {
-        return new QuickFindDisjointSets<>();
         /*
         Disable the line above and enable the one below after you've finished implementing
         your `UnionBySizeCompressingDisjointSets`.
          */
-        // return new UnionBySizeCompressingDisjointSets<>();
+        return new UnionBySizeCompressingDisjointSets<>();
 
         /*
         Otherwise, do not change this method.
@@ -37,11 +37,27 @@ public class KruskalMinimumSpanningTreeFinder<G extends KruskalGraph<V, E>, V, E
 
         // sort edges in the graph in ascending weight order
         List<E> edges = new ArrayList<>(graph.allEdges());
+        if (edges.isEmpty()) {
+            return new MinimumSpanningTree.Success<>();
+        }
         edges.sort(Comparator.comparingDouble(E::weight));
-
         DisjointSets<V> disjointSets = createDisjointSets();
-
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        List<E> mst = new ArrayList<>();
+        for (V vertex : graph.allVertices()) {
+            disjointSets.makeSet(vertex);
+        }
+        for (E edge : edges) {
+            V from = edge.from();
+            V to = edge.to();
+            if (disjointSets.findSet(to) != disjointSets.findSet(from)) {
+                disjointSets.union(from, to);
+                mst.add(edge);
+            }
+        }
+        if (mst.size() != graph.allVertices().size() - 1) {
+            return new MinimumSpanningTree.Failure<>();
+        }
+        MinimumSpanningTree<V, E> result = new MinimumSpanningTree.Success<>(mst);
+        return result;
     }
 }
