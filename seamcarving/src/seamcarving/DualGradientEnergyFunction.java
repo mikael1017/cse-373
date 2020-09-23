@@ -7,20 +7,6 @@ public class DualGradientEnergyFunction implements EnergyFunction {
     @Override
 
 
-    //  Color class
-    //  getRed
-    //  getGreen
-    //  getBlue
-
-
-
-    //  picture class
-    //  picture.get(int col, int row)
-    //  returns the color of pixel as a Color
-    /**
-        returns the energy of a given pixel (x,y)
-
-     */
     public double apply(Picture picture, int x, int y) {
         double xE = determine(picture, x, y, true);
         double yE = determine(picture, x, y, false);
