@@ -139,7 +139,62 @@ public class DijkstraSeamFinder implements SeamFinder {
 
     @Override
     public List<Integer> findVerticalSeam(double[][] energies) {
-        return null;
+        double min = energies[0][0];
+        int minIndex = 0;
+        List<Integer> res = new ArrayList<>();
+
+        for (int x = 0; x < energies.length; x++) {
+            if (energies[x][0] < min) {
+                min = energies[x][0];
+                minIndex = x;
+            }
+        }
+        res.add(minIndex);
+
+        int x = 0;
+        int y = 1;
+        min = 1000;
+        while (y < energies[x].length) {
+            if (minIndex > 0 && (minIndex + 1 < energies.length)) {
+                int x1 = minIndex - 1;
+                int x2 = minIndex;
+                int x3 = minIndex + 1;
+                double e1 = energies[x1][y];
+                double e2 = energies[x2][y];
+                double e3 = energies[x3][y];
+                if (e1 <= e2 && e1 <= e3) {
+                    minIndex = x1;
+                } else if (e2 <= e3 && e2 <= e1) {
+                    minIndex = x2;
+                } else {
+                    minIndex = x3;
+                }
+            } else if (minIndex - 1 < 0) {
+                int x1 = minIndex;
+                int x2 = minIndex + 1;
+                double e1 = energies[x1][y];
+                double e2 = energies[x2][y];
+                if (e1 <= e2) {
+                    minIndex = x1;
+                } else {
+                    minIndex = x2;
+                }
+            } else if (minIndex + 1 == energies.length) {
+                int x1 = minIndex - 1;
+                int x2 = minIndex;
+                double e1 = energies[x1][y];
+                double e2 = energies[x2][y];
+                if (e1 <= e2) {
+                    minIndex = x1;
+                } else {
+                    minIndex = x2;
+                }
+            }
+            min = 1000;
+            res.add(minIndex);
+            y++;
+        }
+        return res;
     }
 
 
